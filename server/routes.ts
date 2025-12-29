@@ -3,6 +3,7 @@ import type { Server } from "http";
 import { storage } from "./storage";
 import { api } from "@shared/routes";
 import { z } from "zod";
+import { runHarvestCycle } from "./harvest";
 
 export async function registerRoutes(
   httpServer: Server,
@@ -44,21 +45,44 @@ export async function registerRoutes(
     res.status(204).send();
   });
 
-  // Seeding endpoint (optional, or auto-seed)
-  // Let's auto-seed if empty
+  // Yield Report Routes
+  app.get(api.yield.list.path, async (req, res) => {
+    const reports = await storage.getYieldReports();
+    res.json(reports);
+  });
+
+  app.get(api.yield.latest.path, async (req, res) => {
+    const report = await storage.getLatestYieldReport();
+    if (!report) {
+      return res.status(404).json({ message: "No reports yet" });
+    }
+    res.json(report);
+  });
+
+  app.post(api.yield.trigger.path, async (req, res) => {
+    const report = await runHarvestCycle();
+    res.json(report);
+  });
+
+  // Start background cycle (every 24h)
+  setInterval(() => {
+    runHarvestCycle().catch(console.error);
+  }, 24 * 60 * 60 * 1000);
+
+  // Auto-seed if empty
   const existing = await storage.getHarvestedItems();
   if (existing.length === 0) {
     await storage.createHarvestedItem({
-      title: "Sample Resource 1",
-      sourceUrl: "https://example.com/resource1",
+      title: "Initial Ledger Scan",
+      sourceUrl: "https://arweave.net/nUxcSVgdJYciKhnm-fUdgvFm3-_XntjH2qxWRdlc3dQ",
       status: "completed",
-      content: "Harvested content for resource 1..."
+      content: "Found 1 high-yield TXID"
     });
-    await storage.createHarvestedItem({
-      title: "Sample Resource 2",
-      sourceUrl: "https://example.com/resource2",
-      status: "pending",
-    });
+  }
+
+  const existingReports = await storage.getYieldReports();
+  if (existingReports.length === 0) {
+    await runHarvestCycle().catch(console.error);
   }
 
   return httpServer;
