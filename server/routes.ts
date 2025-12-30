@@ -3,7 +3,7 @@ import type { Server } from "http";
 import { storage } from "./storage";
 import { api } from "@shared/routes";
 import { z } from "zod";
-import { runHarvestCycle } from "./harvest";
+import { executeHarvestCycle } from "./harvest";
 
 export async function registerRoutes(
   httpServer: Server,
@@ -45,44 +45,36 @@ export async function registerRoutes(
     res.status(204).send();
   });
 
-  // Yield Report Routes
-  app.get(api.yield.list.path, async (req, res) => {
-    const reports = await storage.getYieldReports();
-    res.json(reports);
-  });
-
+  // Yield routes
   app.get(api.yield.latest.path, async (req, res) => {
     const report = await storage.getLatestYieldReport();
     if (!report) {
-      return res.status(404).json({ message: "No reports yet" });
+      return res.status(404).json({ message: "No reports found" });
     }
     res.json(report);
   });
 
-  app.post(api.yield.trigger.path, async (req, res) => {
-    const report = await runHarvestCycle();
-    res.json(report);
+  app.get(api.yield.history.path, async (req, res) => {
+    const history = await storage.getYieldHistory();
+    res.json(history);
   });
 
-  // Start background cycle (every 24h)
-  setInterval(() => {
-    runHarvestCycle().catch(console.error);
-  }, 24 * 60 * 60 * 1000);
+  app.post(api.yield.audit.path, async (req, res) => {
+    const report = await executeHarvestCycle("MANUAL AUDIT SUCCESSFUL");
+    res.json(report);
+  });
 
   // Auto-seed if empty
   const existing = await storage.getHarvestedItems();
   if (existing.length === 0) {
     await storage.createHarvestedItem({
-      title: "Initial Ledger Scan",
-      sourceUrl: "https://arweave.net/nUxcSVgdJYciKhnm-fUdgvFm3-_XntjH2qxWRdlc3dQ",
+      title: "Primary Ledger",
+      sourceUrl: "https://arweave.net/sHqUBKFeS42-CMCvNqPR31yEP63qSJG3ImshfwzJJF8",
       status: "completed",
-      content: "Found 1 high-yield TXID"
+      content: "Protocol anchor manifest verified."
     });
-  }
-
-  const existingReports = await storage.getYieldReports();
-  if (existingReports.length === 0) {
-    await runHarvestCycle().catch(console.error);
+    // Trigger initial harvest report
+    await executeHarvestCycle("INITIAL PROTOCOL BOOT");
   }
 
   return httpServer;

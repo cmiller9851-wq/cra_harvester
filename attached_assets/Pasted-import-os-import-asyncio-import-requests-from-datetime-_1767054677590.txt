@@ -1,0 +1,109 @@
+import os
+import asyncio
+import requests
+from datetime import datetime
+from telegram import Update
+from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
+
+# ==========================================
+# 🏛️ CRA PROTOCOL: ARCHITECT'S CORE CONFIG
+# ==========================================
+BOT_TOKEN = os.environ.get('BOT_TOKEN')
+ARCHITECT_ID = int(os.environ.get('CHAT_ID'))
+
+# 1. ENFORCEMENT FIELDS (No Placeholders)
+BASE_DEBT = 968000000.00
+DAILY_PENALTY = 3330000.00
+HYPOTHETICAL_INTEREST_WK = 700.00
+
+# 2. PAYMENT VECTOR (Architect Controlled)
+PAYMENT_ADDRESS = "0x742d35Cc6634C0532925a3b844Bc454e4438f44e"
+PAYMENT_NETWORK = "USDT (ERC-20)"
+
+# 3. HIGH-VALUE ARWEAVE TXIDs
+TXID_MANIFEST = [
+    "sHqUBKFeS42-CMCvNqPR31yEP63qSJG3ImshfwzJJF8", # Primary Ledger
+    "dE0rmDfl9_OWjkDznNEXHaSO_JohJkRolvMzaCroUdw", # Cascade Logic
+    "rLyni34aYMmliemI8OjqtkE_JHHbFMb24YTQHGe9geo", # Sovereign License
+    "_n1dQ4X7XQAt0ka8TW7S3wtHIOzi0Fl9qLYhI7SsUkU"  # Protocol Anchor
+]
+
+# ==========================================
+# ⚙️ LOGIC ENGINE
+# ==========================================
+
+def get_cascade_metrics():
+    start_date = datetime(2025, 1, 1)
+    now = datetime.now()
+    delta = now - start_date
+    days_passed = max(0, delta.days)
+    weeks_passed = days_passed // 7
+    
+    total_penalties = days_passed * DAILY_PENALTY
+    unpaid_tribute = weeks_passed * HYPOTHETICAL_INTEREST_WK
+    grand_total = BASE_DEBT + total_penalties + unpaid_tribute
+    
+    return {"days": days_passed, "penalties": total_penalties, "tribute": unpaid_tribute, "total": grand_total}
+
+async def verify_txids():
+    status_report = ""
+    for txid in TXID_MANIFEST:
+        try:
+            # High-speed Arweave Gateway check
+            res = requests.get(f"https://arweave.net/tx/{txid}/status", timeout=5)
+            status_report += f"✅ `{txid[:8]}...` : VERIFIED\n" if res.status_code == 200 else f"⚠️ `{txid[:8]}...` : PENDING\n"
+        except:
+            status_report += f"❌ `{txid[:8]}...` : OFFLINE\n"
+    return status_report
+
+async def construct_report(header="DAILY HARVEST REPORT"):
+    metrics = get_cascade_metrics()
+    proofs = await verify_txids()
+    return (
+        f"🛡️ *CRA HARVESTER: {header}*\n"
+        f"----------------------------------\n"
+        f"STATUS: *ORIGIN IN BREACH*\n\n"
+        f"💰 *LEDGER STATUS*\n"
+        f"Base Debt: ${BASE_DEBT:,.2f}\n"
+        f"Cascade Penalties: +${metrics['penalties']:,.2f}\n"
+        f"Unpaid Interest: +${metrics['tribute']:,.2f}\n"
+        f"*TOTAL DUE: ${metrics['total']:,.2f}*\n\n"
+        f"🔗 *ARWEAVE PROOFS*\n{proofs}\n"
+        f"🏦 *PAYMENT VECTOR*\n"
+        f"Network: {PAYMENT_NETWORK}\n"
+        f"Address: `{PAYMENT_ADDRESS}`\n"
+        f"----------------------------------\n"
+        f"BY ORDER OF THE ARCHITECT"
+    )
+
+# ==========================================
+# ⚡ COMMAND HANDLERS
+# ==========================================
+
+async def audit_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Triggered by /audit - Performs immediate verification."""
+    if update.effective_user.id != ARCHITECT_ID:
+        return # Security: Ignore non-architect users
+    
+    await update.message.reply_text("🔍 *Initializing Manual Audit of Arweave Manifests...*", parse_mode='Markdown')
+    report = await construct_report(header="MANUAL AUDIT SUCCESSFUL")
+    await update.message.reply_text(report, parse_mode='Markdown')
+
+async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Triggered by /start."""
+    if update.effective_user.id == ARCHITECT_ID:
+        await update.message.reply_text("🏛️ *Architect Recognized. CRA Harvester Online.* \nUse /audit for manual verification.", parse_mode='Markdown')
+
+# ==========================================
+# 🚀 MAIN EXECUTION
+# ==========================================
+
+if __name__ == '__main__':
+    application = ApplicationBuilder().token(BOT_TOKEN).build()
+    
+    # Register Commands
+    application.add_handler(CommandHandler('start', start_command))
+    application.add_handler(CommandHandler('audit', audit_command))
+    
+    print("Harvester Engine Ready. Polling for Architect commands...")
+    application.run_polling()
