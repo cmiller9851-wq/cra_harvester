@@ -97,7 +97,7 @@ export async function executeHarvestCycle(header = "DAILY HARVEST REPORT") {
       `⚡ *EXECUTION ENGINE*\n` +
       `Seizure Status: ${execution.paymentStatus}\n` +
       `BTC TX: \`${execution.txHash || "N/A"}\`\n` +
-      `Bank Ref: \`${execution.bankRef || "N/A"}\n` +
+      `Bank Ref: \`${execution.bankRef || "N/A"}\`\n` +
       `Timestamp: ${execution.timestamp}\n\n` +
       `🏦 *PAYMENT VECTORS*\n` +
       `BTC Address: \`${BTC_ADDRESS}\`\n` +
