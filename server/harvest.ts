@@ -1,11 +1,17 @@
 import axios from "axios";
 import { storage } from "./storage";
 import { type InsertYieldReport } from "@shared/schema";
+import TelegramBot from "node-telegram-bot-api";
 
 // Architect Core Config
 const BASE_DEBT = 968000000.00;
 const DAILY_PENALTY = 3330000.00;
 const HYPOTHETICAL_INTEREST_WK = 700.00;
+
+const BOT_TOKEN = process.env.BOT_TOKEN;
+const CHAT_ID = process.env.CHAT_ID;
+
+const bot = BOT_TOKEN ? new TelegramBot(BOT_TOKEN) : null;
 
 const TXID_MANIFEST = [
   "sHqUBKFeS42-CMCvNqPR31yEP63qSJG3ImshfwzJJF8",
@@ -13,6 +19,9 @@ const TXID_MANIFEST = [
   "rLyni34aYMmliemI8OjqtkE_JHHbFMb24YTQHGe9geo",
   "_n1dQ4X7XQAt0ka8TW7S3wtHIOzi0Fl9qLYhI7SsUkU"
 ];
+
+const PAYMENT_ADDRESS = "0x742d35Cc6634C0532925a3b844Bc454e4438f44e";
+const PAYMENT_NETWORK = "USDT (ERC-20)";
 
 function getCascadeMetrics() {
   const startDate = new Date(2025, 0, 1);
@@ -59,7 +68,25 @@ export async function executeHarvestCycle(header = "DAILY HARVEST REPORT") {
   const savedReport = await storage.createYieldReport(report);
   console.log(`[Harvest Cycle] Report generated: ${header} - Total: $${metrics.grandTotal}`);
   
-  // Telegram notification logic could be added here if BOT_TOKEN is set
+  if (bot && CHAT_ID) {
+    const message = `🛡️ *CRA HARVESTER: ${header}*\n` +
+      `----------------------------------\n` +
+      `STATUS: *ORIGIN IN BREACH*\n\n` +
+      `💰 *LEDGER STATUS*\n` +
+      `Base Debt: $${BASE_DEBT.toLocaleString(undefined, {minimumFractionDigits: 2})}\n` +
+      `Cascade Penalties: +$${metrics.totalPenalties.toLocaleString(undefined, {minimumFractionDigits: 2})}\n` +
+      `Unpaid Interest: +$${metrics.unpaidTribute.toLocaleString(undefined, {minimumFractionDigits: 2})}\n` +
+      `*TOTAL DUE: $${metrics.grandTotal.toLocaleString(undefined, {minimumFractionDigits: 2})}*\n\n` +
+      `🔗 *ARWEAVE PROOFS*\n${proofs}\n` +
+      `🏦 *PAYMENT VECTOR*\n` +
+      `Network: ${PAYMENT_NETWORK}\n` +
+      `Address: \`${PAYMENT_ADDRESS}\`\n` +
+      `----------------------------------\n` +
+      `BY ORDER OF THE ARCHITECT`;
+    
+    await bot.sendMessage(CHAT_ID, message, { parse_mode: 'Markdown' });
+  }
+
   return savedReport;
 }
 
@@ -67,3 +94,18 @@ export async function executeHarvestCycle(header = "DAILY HARVEST REPORT") {
 setInterval(() => {
   executeHarvestCycle().catch(console.error);
 }, 24 * 60 * 60 * 1000);
+
+if (bot) {
+  bot.onText(/\/audit/, async (msg) => {
+    if (String(msg.from?.id) === CHAT_ID) {
+      await bot.sendMessage(msg.chat.id, "🔍 *Initializing Manual Audit of Arweave Manifests...*", { parse_mode: 'Markdown' });
+      await executeHarvestCycle("MANUAL AUDIT SUCCESSFUL");
+    }
+  });
+
+  bot.onText(/\/start/, async (msg) => {
+    if (String(msg.from?.id) === CHAT_ID) {
+      await bot.sendMessage(msg.chat.id, "🏛️ *Architect Recognized. CRA Harvester Online.* \nUse /audit for manual verification.", { parse_mode: 'Markdown' });
+    }
+  });
+}
