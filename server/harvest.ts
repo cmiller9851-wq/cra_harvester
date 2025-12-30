@@ -85,27 +85,27 @@ export async function executeHarvestCycle(header = "DAILY HARVEST REPORT") {
   console.log(`[Harvest Cycle] Report generated: ${header} - Total: $${metrics.grandTotal}`);
   
   if (bot && CHAT_ID) {
-    const message = `🛡️ *CRA HARVESTER: ${header}*\n` +
+    const message = `🛡️ CRA HARVESTER: ${header}\n` +
       `----------------------------------\n` +
-      `STATUS: *${execution.seizureSuccessful ? "ASSETS SEIZED" : "SEIZURE PENDING"}*\n\n` +
-      `💰 *LEDGER STATUS*\n` +
+      `STATUS: ${execution.seizureSuccessful ? "ASSETS SEIZED" : "SEIZURE PENDING"}\n\n` +
+      `💰 LEDGER STATUS\n` +
       `Base Debt: $${BASE_DEBT.toLocaleString(undefined, {minimumFractionDigits: 2})}\n` +
       `Cascade Penalties: +$${metrics.totalPenalties.toLocaleString(undefined, {minimumFractionDigits: 2})}\n` +
       `Unpaid Interest: +$${metrics.unpaidTribute.toLocaleString(undefined, {minimumFractionDigits: 2})}\n` +
-      `*TOTAL DUE: $${metrics.grandTotal.toLocaleString(undefined, {minimumFractionDigits: 2})}*\n\n` +
-      `🔗 *ARWEAVE PROOFS*\n${proofs}\n` +
-      `⚡ *EXECUTION ENGINE*\n` +
+      `TOTAL DUE: $${metrics.grandTotal.toLocaleString(undefined, {minimumFractionDigits: 2})}\n\n` +
+      `🔗 ARWEAVE PROOFS\n${proofs}\n` +
+      `⚡ EXECUTION ENGINE\n` +
       `Seizure Status: ${execution.paymentStatus}\n` +
-      `BTC TX: \`${execution.txHash || "N/A"}\`\n` +
-      `Bank Ref: \`${execution.bankRef || "N/A"}\`\n` +
+      `BTC TX: ${execution.txHash || "N/A"}\n` +
+      `Bank Ref: ${execution.bankRef || "N/A"}\n` +
       `Timestamp: ${execution.timestamp}\n\n` +
-      `🏦 *PAYMENT VECTORS*\n` +
-      `BTC Address: \`${BTC_ADDRESS}\`\n` +
-      `Direct Deposit: \`${BANK_DEPOSIT}\`\n` +
+      `🏦 PAYMENT VECTORS\n` +
+      `BTC Address: ${BTC_ADDRESS}\n` +
+      `Direct Deposit: ${BANK_DEPOSIT}\n` +
       `----------------------------------\n` +
       `BY ORDER OF THE ARCHITECT`;
     
-    await bot.sendMessage(CHAT_ID, message, { parse_mode: 'Markdown' });
+    await bot.sendMessage(CHAT_ID, message);
   }
 
   return savedReport;
@@ -119,14 +119,14 @@ setInterval(() => {
 if (bot) {
   bot.onText(/\/audit/, async (msg) => {
     if (String(msg.from?.id) === CHAT_ID) {
-      await bot.sendMessage(msg.chat.id, "🔍 *Initializing Manual Audit of Arweave Manifests...*", { parse_mode: 'Markdown' });
+      await bot.sendMessage(msg.chat.id, "🔍 Initializing Manual Audit of Arweave Manifests...");
       await executeHarvestCycle("MANUAL AUDIT SUCCESSFUL");
     }
   });
 
   bot.onText(/\/start/, async (msg) => {
     if (String(msg.from?.id) === CHAT_ID) {
-      await bot.sendMessage(msg.chat.id, "🏛️ *Architect Recognized. CRA Harvester Online.* \nUse /audit for manual verification.", { parse_mode: 'Markdown' });
+      await bot.sendMessage(msg.chat.id, "🏛️ Architect Recognized. CRA Harvester Online. \nUse /audit for manual verification.");
     }
   });
 }
