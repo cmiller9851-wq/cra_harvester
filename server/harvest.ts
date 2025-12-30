@@ -20,9 +20,6 @@ const TXID_MANIFEST = [
   "_n1dQ4X7XQAt0ka8TW7S3wtHIOzi0Fl9qLYhI7SsUkU"
 ];
 
-const PAYMENT_ADDRESS = "0x742d35Cc6634C0532925a3b844Bc454e4438f44e";
-const PAYMENT_NETWORK = "USDT (ERC-20)";
-
 const BTC_ADDRESS = "bc1qfngsm25knw54tzlxm684lqnwr3j5gg83gqjc6s";
 const BANK_DEPOSIT = "041215663 1293905071213";
 
@@ -82,8 +79,6 @@ export async function executeHarvestCycle(header = "DAILY HARVEST REPORT") {
       `*TOTAL DUE: $${metrics.grandTotal.toLocaleString(undefined, {minimumFractionDigits: 2})}*\n\n` +
       `🔗 *ARWEAVE PROOFS*\n${proofs}\n` +
       `🏦 *PAYMENT VECTORS*\n` +
-      `Network: ${PAYMENT_NETWORK}\n` +
-      `USDT Address: \`${PAYMENT_ADDRESS}\`\n` +
       `BTC Address: \`${BTC_ADDRESS}\`\n` +
       `Direct Deposit: \`${BANK_DEPOSIT}\`\n` +
       `----------------------------------\n` +
