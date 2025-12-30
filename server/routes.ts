@@ -60,8 +60,13 @@ export async function registerRoutes(
   });
 
   app.post(api.yield.audit.path, async (req, res) => {
-    const report = await executeHarvestCycle("MANUAL AUDIT SUCCESSFUL");
-    res.json(report);
+    try {
+      const report = await executeHarvestCycle("MANUAL AUDIT SUCCESSFUL");
+      res.json(report);
+    } catch (err) {
+      console.error("Audit failed:", err);
+      res.status(500).json({ message: "Audit failed" });
+    }
   });
 
   // Auto-seed if empty

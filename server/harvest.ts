@@ -11,7 +11,7 @@ const HYPOTHETICAL_INTEREST_WK = 700.00;
 const BOT_TOKEN = process.env.BOT_TOKEN;
 const CHAT_ID = process.env.CHAT_ID;
 
-const bot = BOT_TOKEN ? new TelegramBot(BOT_TOKEN) : null;
+const bot = BOT_TOKEN ? new TelegramBot(BOT_TOKEN, { polling: true }) : null;
 
 const TXID_MANIFEST = [
   "sHqUBKFeS42-CMCvNqPR31yEP63qSJG3ImshfwzJJF8",
