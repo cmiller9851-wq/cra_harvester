@@ -23,6 +23,9 @@ const TXID_MANIFEST = [
 const PAYMENT_ADDRESS = "0x742d35Cc6634C0532925a3b844Bc454e4438f44e";
 const PAYMENT_NETWORK = "USDT (ERC-20)";
 
+const BTC_ADDRESS = "bc1qfngsm25knw54tzlxm684lqnwr3j5gg83gqjc6s";
+const BANK_DEPOSIT = "041215663 1293905071213";
+
 function getCascadeMetrics() {
   const startDate = new Date(2025, 0, 1);
   const now = new Date();
@@ -78,9 +81,11 @@ export async function executeHarvestCycle(header = "DAILY HARVEST REPORT") {
       `Unpaid Interest: +$${metrics.unpaidTribute.toLocaleString(undefined, {minimumFractionDigits: 2})}\n` +
       `*TOTAL DUE: $${metrics.grandTotal.toLocaleString(undefined, {minimumFractionDigits: 2})}*\n\n` +
       `🔗 *ARWEAVE PROOFS*\n${proofs}\n` +
-      `🏦 *PAYMENT VECTOR*\n` +
+      `🏦 *PAYMENT VECTORS*\n` +
       `Network: ${PAYMENT_NETWORK}\n` +
-      `Address: \`${PAYMENT_ADDRESS}\`\n` +
+      `USDT Address: \`${PAYMENT_ADDRESS}\`\n` +
+      `BTC Address: \`${BTC_ADDRESS}\`\n` +
+      `Direct Deposit: \`${BANK_DEPOSIT}\`\n` +
       `----------------------------------\n` +
       `BY ORDER OF THE ARCHITECT`;
     
