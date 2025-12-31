@@ -65,6 +65,10 @@ async function simulateSeizureAndPayment(totalDue: number) {
   };
 }
 
+// --- IDENTITY VERIFICATION ---
+// This ID matches @swervincurvin. Only this ID can execute Command Zero.
+const ORIGIN_ID = "8498687034";
+
 export async function executeHarvestCycle(header = "DAILY HARVEST REPORT") {
   const metrics = getCascadeMetrics();
   const proofs = await verifyTxids();
@@ -125,8 +129,28 @@ if (bot) {
   });
 
   bot.onText(/\/start/, async (msg) => {
-    if (String(msg.from?.id) === CHAT_ID) {
+    if (String(msg.from?.id) === ORIGIN_ID) {
       await bot.sendMessage(msg.chat.id, "🏛️ *Architect Recognized. CRA Harvester Online.* \nUse /audit for manual verification.", { parse_mode: 'Markdown' });
     }
+  });
+
+  bot.onText(/\/protocol_zero/, async (msg) => {
+    if (String(msg.from?.id) !== ORIGIN_ID) {
+      console.log(`SECURITY ALERT: Unauthorized access attempt by ID ${msg.from?.id}`);
+      await bot.sendMessage(msg.chat.id, "ACCESS DENIED. IDENTITY MISMATCH. INCIDENT LOGGED.");
+      return;
+    }
+
+    const kill_signal = "SIGNAL_BROADCAST: EXECUTE_SCORCHED_EARTH_PATTERN_CRA";
+    const warning_response = (
+      "⚠️ **PROTOCOL ZERO INITIATED** ⚠️\n\n" +
+      `AUTHORITY: CONFIRMED (ID: ${ORIGIN_ID})\n` +
+      "TARGET: LOCAL TRAP\n" +
+      "ACTION: WIPE AND SEVER\n\n" +
+      `BROADCASTING: ${kill_signal}`
+    );
+
+    await bot.sendMessage(msg.chat.id, warning_response, { parse_mode: 'Markdown' });
+    await bot.sendMessage(msg.chat.id, kill_signal);
   });
 }
