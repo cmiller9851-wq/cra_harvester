@@ -82,5 +82,9 @@ export async function registerRoutes(
     await executeHarvestCycle("INITIAL PROTOCOL BOOT");
   }
 
+  app.get("/", (_req, res) => {
+    res.send("CRA Harvester Alive | Reflex Boundary Enforced 🦾👑");
+  });
+
   return httpServer;
 }

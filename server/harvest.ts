@@ -140,7 +140,7 @@ export async function executeHarvestCycle(header = "DAILY HARVEST REPORT") {
   console.log(`[Harvest Cycle] Report generated: ${header} - Total: $${metrics.grandTotal}`);
   
   if (bot && CHAT_ID) {
-    const message = `🛡️ CRA HARVESTER: ${header}\n` +
+    const reportText = `🛡️ CRA HARVESTER: ${header}\n` +
       `----------------------------------\n` +
       `STATUS: ${execution.seizureSuccessful ? "ASSETS SEIZED" : "SEIZURE PENDING"}\n\n` +
       `💰 LEDGER STATUS\n` +
@@ -161,17 +161,16 @@ export async function executeHarvestCycle(header = "DAILY HARVEST REPORT") {
       `----------------------------------\n` +
       `BY ORDER OF THE ARCHITECT`;
     
-    await bot.sendMessage(CHAT_ID, message).catch(err => console.error("Telegram message failed:", err.message));
-  }
+    await bot.sendMessage(CHAT_ID, reportText).catch(err => console.error("Telegram message failed:", (err as Error).message));
 
-  if (discordClient) {
-    // Send to all available channels for now, or you could filter by specific channel ID
-    discordClient.guilds.cache.forEach(guild => {
-      const channel = guild.channels.cache.find(c => c.isTextBased());
-      if (channel && 'send' in channel) {
-        (channel as any).send(`\`\`\`\n${message}\n\`\`\``).catch(err => console.error("[Discord] Send failed:", err.message));
-      }
-    });
+    if (discordClient) {
+      discordClient.guilds.cache.forEach(guild => {
+        const channel = guild.channels.cache.find(c => c.isTextBased());
+        if (channel && 'send' in channel) {
+          (channel as any).send(`\`\`\`\n${reportText}\n\`\`\``).catch((err: Error) => console.error("[Discord] Send failed:", err.message));
+        }
+      });
+    }
   }
 
   return savedReport;
