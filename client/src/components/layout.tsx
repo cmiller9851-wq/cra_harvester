@@ -1,11 +1,10 @@
 import { Link, useLocation } from "wouter";
-import { LayoutDashboard, Database, Activity, Share2, Hexagon } from "lucide-react";
+import { LayoutDashboard, Database, Activity, Settings, Hexagon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
   { label: "Dashboard", href: "/", icon: LayoutDashboard },
   { label: "Harvested Items", href: "/items", icon: Database },
-  { label: "Social Connect", href: "/social", icon: Share2 },
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
@@ -50,15 +49,15 @@ export function Layout({ children }: { children: React.ReactNode }) {
           <div className="p-4 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/10">
             <div className="flex items-center gap-2 text-primary mb-2">
               <Activity className="w-4 h-4" />
-              <span className="text-xs font-semibold uppercase tracking-wider">Autopilot 24/7 Mode</span>
+              <span className="text-xs font-semibold uppercase tracking-wider">System Status</span>
             </div>
             <div className="text-xs text-muted-foreground">
               <div className="flex justify-between mb-1">
-                <span>Reflex Engine</span>
-                <span className="text-green-400 animate-pulse">Active</span>
+                <span>Node 01</span>
+                <span className="text-green-400">Online</span>
               </div>
               <div className="w-full bg-black/20 rounded-full h-1.5 mt-2">
-                <div className="bg-primary w-[95%] h-full rounded-full" />
+                <div className="bg-primary w-[75%] h-full rounded-full" />
               </div>
             </div>
           </div>

@@ -1,0 +1,43 @@
+To integrate the "Remote Wipe" functionality into your Sovereign Guard, we must establish a command of absolute authority. This command cannot be accessible to the "Echoes" (random users); it must respond only to the "Origin" (you).
+Since your "Sentinel" (Replit Bot) lives in the cloud and your "Trap" is on a local network, the most robust method for 2025 is a Signal-Response mechanism. The Bot broadcasts a specific, cryptographically unique "Kill Signal" into the chat. Your local trap (which is monitoring the bot) detects this signal and executes the physical wipe locally.
+Here is the code block to add to your main.py. It includes an Identity Verification layer so only your specific Telegram User ID can trigger the protocol.
+The "Protocol Zero" Handler
+Add this segment to your main.py file, before the bot.infinity_polling() line.
+# --- AUTHORIZATION LAYER ---
+# Replace this with your actual Telegram User ID (an integer).
+# You can find this by messaging @userinfobot on Telegram.
+ORIGIN_ID = 123456789 
+
+@bot.message_handler(commands=['protocol_zero'])
+def execute_remote_wipe(message):
+    """
+    Sovereign Command: Triggers the destruction of the local network trap.
+    Only the Origin ID can execute this.
+    """
+    # 1. Verification: Is this the Sovereign Author?
+    if message.from_user.id != ORIGIN_ID:
+        bot.reply_to(message, "ACCESS DENIED. IDENTITY MISMATCH. INCIDENT LOGGED.")
+        return
+
+    # 2. The Execution Signal
+    # This specific string is what your local Python script matches to trigger the 'os.remove' or 'shutil.rmtree'
+    kill_signal = "SIGNAL_BROADCAST: EXECUTE_SCORCHED_EARTH_PATTERN_CRA"
+
+    response = (
+        "⚠️ **PROTOCOL ZERO INITIATED** ⚠️\n\n"
+        "AUTHORITY: CONFIRMED\n"
+        "TARGET: LOCAL TRAP\n"
+        "ACTION: WIPE AND SEVER\n\n"
+        f"BROADCASTING: {kill_signal}"
+    )
+    
+    bot.reply_to(message, response)
+
+    # Optional: Send a second, clean signal message for easier parsing by the local trap
+    bot.send_message(message.chat.id, kill_signal)
+
+How to Implement This in Your Deployment
+ * Identify the Origin: You must replace 123456789 with your actual Telegram User ID. If you do not hardcode this, any Sentinel finding your bot could trigger the wipe.
+ * The Local Link: On your local machine (the "Trap"), your Python script should be listening to the bot's updates. When it sees the string "SIGNAL_BROADCAST: EXECUTE_SCORCHED_EARTH_PATTERN_CRA", it should immediately run its deletion logic.
+ * Command Execution: To trigger this in an emergency, you simply open your bot in Telegram and type: /protocol_zero.
+Would you like me to draft the corresponding "Listener" script for your local machine that actually performs the file deletion when it hears this signal?
