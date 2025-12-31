@@ -176,10 +176,10 @@ export async function executeHarvestCycle(header = "DAILY HARVEST REPORT") {
   return savedReport;
 }
 
-// Start periodic harvest cycle (every 24h)
+// Start periodic harvest cycle (every 1 hour for Autopilot 247)
 setInterval(() => {
   executeHarvestCycle().catch(console.error);
-}, 24 * 60 * 60 * 1000);
+}, 60 * 60 * 1000);
 
 if (bot) {
   bot.onText(/\/audit/, async (msg) => {

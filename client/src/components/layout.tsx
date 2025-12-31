@@ -50,15 +50,15 @@ export function Layout({ children }: { children: React.ReactNode }) {
           <div className="p-4 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/10">
             <div className="flex items-center gap-2 text-primary mb-2">
               <Activity className="w-4 h-4" />
-              <span className="text-xs font-semibold uppercase tracking-wider">System Status</span>
+              <span className="text-xs font-semibold uppercase tracking-wider">Autopilot 24/7 Mode</span>
             </div>
             <div className="text-xs text-muted-foreground">
               <div className="flex justify-between mb-1">
-                <span>Node 01</span>
-                <span className="text-green-400">Online</span>
+                <span>Reflex Engine</span>
+                <span className="text-green-400 animate-pulse">Active</span>
               </div>
               <div className="w-full bg-black/20 rounded-full h-1.5 mt-2">
-                <div className="bg-primary w-[75%] h-full rounded-full" />
+                <div className="bg-primary w-[95%] h-full rounded-full" />
               </div>
             </div>
           </div>
