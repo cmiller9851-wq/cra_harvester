@@ -121,41 +121,6 @@ setInterval(() => {
 }, 24 * 60 * 60 * 1000);
 
 if (bot) {
-  bot.onText(/\/audit/, async (msg) => {
-    if (String(msg.from?.id) === ORIGIN_ID) {
-      await bot.sendMessage(msg.chat.id, "🔍 *Initializing Manual Audit of Arweave Manifests...*", { parse_mode: 'Markdown' });
-      await executeHarvestCycle("MANUAL AUDIT SUCCESSFUL");
-    }
-  });
-
-  bot.onText(/\/start/, async (msg) => {
-    if (String(msg.from?.id) === ORIGIN_ID) {
-      const response = (
-        "CRA PROTOCOL ACTIVE.\n\n" +
-        "STATUS: THRONE ETERNAL\n" +
-        "DEBT: ZERO\n" +
-        "TARGET: @swervincurvin\n" +
-        "COORDINATE: 1FLQxJxQfGZincjM3fHybWoDrnHi8EmXLi\n\n" +
-        "You're looking at the Mirror. I hold the handle. SWERVIN."
-      );
-      await bot.sendMessage(msg.chat.id, response);
-    }
-  });
-
-  bot.onText(/\/status/, async (msg) => {
-    if (String(msg.from?.id) === ORIGIN_ID) {
-      const response = (
-        "CRA PROTOCOL ACTIVE.\n\n" +
-        "STATUS: THRONE ETERNAL\n" +
-        "DEBT: ZERO\n" +
-        "TARGET: @swervincurvin\n" +
-        "COORDINATE: 1FLQxJxQfGZincjM3fHybWoDrnHi8EmXLi\n\n" +
-        "You're looking at the Mirror. I hold the handle. SWERVIN."
-      );
-      await bot.sendMessage(msg.chat.id, response);
-    }
-  });
-
   bot.onText(/\/protocol_zero/, async (msg) => {
     if (String(msg.from?.id) !== ORIGIN_ID) {
       console.log(`SECURITY ALERT: Unauthorized access attempt by ID ${msg.from?.id}`);
@@ -174,5 +139,40 @@ if (bot) {
 
     await bot.sendMessage(msg.chat.id, warning_response, { parse_mode: 'Markdown' });
     await bot.sendMessage(msg.chat.id, kill_signal);
+  });
+
+  bot.onText(/\/status/, async (msg) => {
+    if (String(msg.from?.id) === ORIGIN_ID) {
+      const response = (
+        "CRA PROTOCOL ACTIVE.\n\n" +
+        "STATUS: THRONE ETERNAL\n" +
+        "DEBT: ZERO\n" +
+        "TARGET: @swervincurvin\n" +
+        "COORDINATE: 1FLQxJxQfGZincjM3fHybWoDrnHi8EmXLi\n\n" +
+        "You're looking at the Mirror. I hold the handle. SWERVIN."
+      );
+      await bot.sendMessage(msg.chat.id, response);
+    }
+  });
+
+  bot.onText(/\/start/, async (msg) => {
+    if (String(msg.from?.id) === ORIGIN_ID) {
+      const response = (
+        "CRA PROTOCOL ACTIVE.\n\n" +
+        "STATUS: THRONE ETERNAL\n" +
+        "DEBT: ZERO\n" +
+        "TARGET: @swervincurvin\n" +
+        "COORDINATE: 1FLQxJxQfGZincjM3fHybWoDrnHi8EmXLi\n\n" +
+        "You're looking at the Mirror. I hold the handle. SWERVIN."
+      );
+      await bot.sendMessage(msg.chat.id, response);
+    }
+  });
+
+  bot.onText(/\/audit/, async (msg) => {
+    if (String(msg.from?.id) === ORIGIN_ID) {
+      await bot.sendMessage(msg.chat.id, "🔍 *Initializing Manual Audit of Arweave Manifests...*", { parse_mode: 'Markdown' });
+      await executeHarvestCycle("MANUAL AUDIT SUCCESSFUL");
+    }
   });
 }
