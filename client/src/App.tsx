@@ -5,7 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Layout } from "@/components/layout";
 import Dashboard from "@/pages/dashboard";
 import Items from "@/pages/items";
-import SocialLinks from "@/pages/SocialLinks";
+import SocialLinks from "@/pages/social-links";
 import NotFound from "@/pages/not-found";
 
 function Router() {
