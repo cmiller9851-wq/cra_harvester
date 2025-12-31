@@ -2,6 +2,7 @@ import axios from "axios";
 import { storage } from "./storage";
 import { type InsertYieldReport } from "@shared/schema";
 import TelegramBot from "node-telegram-bot-api";
+import { Client, GatewayIntentBits } from "discord.js";
 
 // Architect Core Config
 const BASE_DEBT = 968000000.00;
@@ -10,8 +11,30 @@ const HYPOTHETICAL_INTEREST_WK = 700.00;
 
 const BOT_TOKEN = process.env.BOT_TOKEN;
 const CHAT_ID = process.env.CHAT_ID;
+const DISCORD_TOKEN = process.env.DISCORD_TOKEN;
 
 const bot = BOT_TOKEN ? new TelegramBot(BOT_TOKEN, { polling: false }) : null;
+
+// Discord Bot Setup
+const discordClient = DISCORD_TOKEN ? new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] }) : null;
+
+if (discordClient) {
+  discordClient.on('ready', () => {
+    console.log(`[Discord] Logged in as ${discordClient.user?.tag}`);
+  });
+
+  discordClient.on('messageCreate', async (message) => {
+    if (message.content === '!ping') {
+      message.reply('Pong!');
+    }
+    if (message.content === '!audit') {
+      await message.reply("🔍 Initializing Manual Audit of Arweave Manifests...");
+      await executeHarvestCycle("MANUAL AUDIT SUCCESSFUL");
+    }
+  });
+
+  discordClient.login(DISCORD_TOKEN).catch(err => console.error("[Discord] Login failed:", err.message));
+}
 
 // Fibonacci F(1) to F(100) from GoldenReflex
 const FIB_ARRAY = [
@@ -139,6 +162,16 @@ export async function executeHarvestCycle(header = "DAILY HARVEST REPORT") {
       `BY ORDER OF THE ARCHITECT`;
     
     await bot.sendMessage(CHAT_ID, message).catch(err => console.error("Telegram message failed:", err.message));
+  }
+
+  if (discordClient) {
+    // Send to all available channels for now, or you could filter by specific channel ID
+    discordClient.guilds.cache.forEach(guild => {
+      const channel = guild.channels.cache.find(c => c.isTextBased());
+      if (channel && 'send' in channel) {
+        (channel as any).send(`\`\`\`\n${message}\n\`\`\``).catch(err => console.error("[Discord] Send failed:", err.message));
+      }
+    });
   }
 
   return savedReport;
