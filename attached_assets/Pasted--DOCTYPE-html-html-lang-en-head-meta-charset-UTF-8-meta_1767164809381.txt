@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stylish Social Links</title>
+    <style>
+        body {
+            background-color: #121212; /* Dark mode trendy background */
+            color: #ffffff;
+            font-family: 'Poppins', sans-serif; /* Modern font */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .social-container {
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .social-title {
+            font-size: 2.5em;
+            margin-bottom: 40px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #ffeb3b; /* Trendy yellow accent */
+            text-shadow: 0 0 10px rgba(255, 235, 59, 0.5);
+            animation: glow 2s infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 10px rgba(255, 235, 59, 0.5); }
+            to { text-shadow: 0 0 20px rgba(255, 235, 59, 1); }
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .social-link {
+            position: relative;
+            display: inline-block;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            text-decoration: none;
+            color: #ffffff;
+            background: linear-gradient(135deg, #ff6b6b, #ffd93d); /* Vibrant gradient */
+            border-radius: 50px; /* Pill shape, trendy */
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+            overflow: hidden;
+        }
+
+        .social-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            transition: left 0.5s ease;
+        }
+
+        .social-link:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+            background: linear-gradient(135deg, #ffd93d, #ff6b6b); /* Reverse gradient on hover */
+        }
+
+        .social-link:hover::before {
+            left: 0;
+        }
+
+        .social-link:active {
+            transform: translateY(0);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Particle background for advanced effect */
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            animation: float 15s infinite linear;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(-100vh); opacity: 0; }
+        }
+
+        /* Generate particles via JS for dynamic effect */
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    <div class="social-container">
+        <h1 class="social-title">Connect With Me</h1>
+        <div class="social-links">
+            <a href="https://x.com/vccmac?s=21" class="social-link" target="_blank">X (Twitter)</a>
+            <a href="https://www.facebook.com/share/1HLK5U5GxR/?mibextid=wwXIfr" class="social-link" target="_blank">Facebook</a>
+            <a href="https://github.com/cmiller9851-wq" class="social-link" target="_blank">GitHub</a>
+            <a href="http://swervincurvin.blogspot.com/" class="social-link" target="_blank">Blogger</a>
+            <a href="https://t.me/cra_harvester_bot" class="social-link" target="_blank">Telegram Bot</a>
+        </div>
+    </div>
+
+    <script>
+        // Dynamic particles for trendy background
+        const particlesContainer = document.getElementById('particles');
+        const particleCount = 50;
+
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.classList.add('particle');
+            particle.style.width = `${Math.random() * 5 + 2}px`;
+            particle.style.height = particle.style.width;
+            particle.style.left = `${Math.random() * 100}vw`;
+            particle.style.animationDelay = `${Math.random() * 10}s`;
+            particle.style.animationDuration = `${Math.random() * 10 + 10}s`;
+            particlesContainer.appendChild(particle);
+        }
+    </script>
+</body>
+</html>
+```​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​

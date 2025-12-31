@@ -1,10 +1,11 @@
 import { Link, useLocation } from "wouter";
-import { LayoutDashboard, Database, Activity, Settings, Hexagon } from "lucide-react";
+import { LayoutDashboard, Database, Activity, Share2, Hexagon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
   { label: "Dashboard", href: "/", icon: LayoutDashboard },
   { label: "Harvested Items", href: "/items", icon: Database },
+  { label: "Social Connect", href: "/social", icon: Share2 },
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
