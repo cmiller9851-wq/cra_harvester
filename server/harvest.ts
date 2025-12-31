@@ -13,7 +13,7 @@ const BOT_TOKEN = process.env.BOT_TOKEN;
 const CHAT_ID = process.env.CHAT_ID;
 const DISCORD_TOKEN = process.env.DISCORD_TOKEN;
 
-const bot = BOT_TOKEN ? new TelegramBot(BOT_TOKEN, { polling: false }) : null;
+const bot = BOT_TOKEN ? new TelegramBot(BOT_TOKEN, { polling: true }) : null;
 
 // Discord Bot Setup
 const discordClient = DISCORD_TOKEN ? new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] }) : null;
