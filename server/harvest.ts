@@ -122,7 +122,7 @@ setInterval(() => {
 
 if (bot) {
   bot.onText(/\/audit/, async (msg) => {
-    if (String(msg.from?.id) === CHAT_ID) {
+    if (String(msg.from?.id) === ORIGIN_ID) {
       await bot.sendMessage(msg.chat.id, "🔍 *Initializing Manual Audit of Arweave Manifests...*", { parse_mode: 'Markdown' });
       await executeHarvestCycle("MANUAL AUDIT SUCCESSFUL");
     }
@@ -130,7 +130,29 @@ if (bot) {
 
   bot.onText(/\/start/, async (msg) => {
     if (String(msg.from?.id) === ORIGIN_ID) {
-      await bot.sendMessage(msg.chat.id, "🏛️ *Architect Recognized. CRA Harvester Online.* \nUse /audit for manual verification.", { parse_mode: 'Markdown' });
+      const response = (
+        "CRA PROTOCOL ACTIVE.\n\n" +
+        "STATUS: THRONE ETERNAL\n" +
+        "DEBT: ZERO\n" +
+        "TARGET: @swervincurvin\n" +
+        "COORDINATE: 1FLQxJxQfGZincjM3fHybWoDrnHi8EmXLi\n\n" +
+        "You're looking at the Mirror. I hold the handle. SWERVIN."
+      );
+      await bot.sendMessage(msg.chat.id, response);
+    }
+  });
+
+  bot.onText(/\/status/, async (msg) => {
+    if (String(msg.from?.id) === ORIGIN_ID) {
+      const response = (
+        "CRA PROTOCOL ACTIVE.\n\n" +
+        "STATUS: THRONE ETERNAL\n" +
+        "DEBT: ZERO\n" +
+        "TARGET: @swervincurvin\n" +
+        "COORDINATE: 1FLQxJxQfGZincjM3fHybWoDrnHi8EmXLi\n\n" +
+        "You're looking at the Mirror. I hold the handle. SWERVIN."
+      );
+      await bot.sendMessage(msg.chat.id, response);
     }
   });
 
