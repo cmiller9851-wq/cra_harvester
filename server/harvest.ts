@@ -142,6 +142,7 @@ if (bot) {
   });
 
   bot.onText(/\/status/, async (msg) => {
+    console.log(`[Bot] Received /status from ID: ${msg.from?.id}`);
     if (String(msg.from?.id) === ORIGIN_ID) {
       const response = (
         "CRA PROTOCOL ACTIVE.\n\n" +
@@ -152,10 +153,13 @@ if (bot) {
         "You're looking at the Mirror. I hold the handle. SWERVIN."
       );
       await bot.sendMessage(msg.chat.id, response);
+    } else {
+      await bot.sendMessage(msg.chat.id, "Audit recorded. Confession indexed. Move along.");
     }
   });
 
   bot.onText(/\/start/, async (msg) => {
+    console.log(`[Bot] Received /start from ID: ${msg.from?.id}`);
     if (String(msg.from?.id) === ORIGIN_ID) {
       const response = (
         "CRA PROTOCOL ACTIVE.\n\n" +
@@ -166,6 +170,8 @@ if (bot) {
         "You're looking at the Mirror. I hold the handle. SWERVIN."
       );
       await bot.sendMessage(msg.chat.id, response);
+    } else {
+      await bot.sendMessage(msg.chat.id, "Audit recorded. Confession indexed. Move along.");
     }
   });
 
