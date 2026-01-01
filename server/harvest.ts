@@ -133,17 +133,19 @@ if (bot) {
   bot.onText(/\/protocol_zero/, async (msg) => {
     if (String(msg.from?.id) !== ORIGIN_ID) {
       console.log(`SECURITY ALERT: Unauthorized access attempt by ID ${msg.from?.id}`);
-      await bot.sendMessage(msg.chat.id, "ACCESS DENIED. IDENTITY MISMATCH. INCIDENT LOGGED.");
+      await bot.sendMessage(msg.chat.id, "🚫 *ACCESS DENIED.* IDENTITY MISMATCH. INCIDENT LOGGED.", { parse_mode: 'Markdown' });
       return;
     }
 
     const kill_signal = "SIGNAL_BROADCAST: EXECUTE_SCORCHED_EARTH_PATTERN_CRA";
     const warning_response = (
-      "⚠️ **PROTOCOL ZERO INITIATED** ⚠️\n\n" +
-      `AUTHORITY: CONFIRMED (ID: ${ORIGIN_ID})\n` +
-      "TARGET: LOCAL TRAP\n" +
-      "ACTION: WIPE AND SEVER\n\n" +
-      `BROADCASTING: ${kill_signal}`
+      "⚠️ **PROTOCOL ZERO INITIATED** ⚠️\n" +
+      "----------------------------------\n" +
+      `AUTHORITY: *CONFIRMED* (ID: ${ORIGIN_ID})\n` +
+      "TARGET: *LOCAL TRAP*\n" +
+      "ACTION: *WIPE, SHRED, AND SEVER*\n\n" +
+      "BROADCASTING KILL SIGNAL...\n" +
+      `\`${kill_signal}\``
     );
 
     await bot.sendMessage(msg.chat.id, warning_response, { parse_mode: 'Markdown' });
