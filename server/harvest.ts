@@ -13,6 +13,15 @@ const CHAT_ID = process.env.CHAT_ID;
 
 const bot = BOT_TOKEN ? new TelegramBot(BOT_TOKEN, { polling: true }) : null;
 
+if (bot) {
+  bot.on('polling_error', (error: any) => {
+    console.error(`[Bot] Polling error: ${error.code || 'UNKNOWN'} - ${error.message}`);
+  });
+  console.log("[Bot] Initialized and polling...");
+} else {
+  console.error("[Bot] Failed to initialize: BOT_TOKEN or TELEGRAM_TOKEN missing.");
+}
+
 const TXID_MANIFEST = [
   "sHqUBKFeS42-CMCvNqPR31yEP63qSJG3ImshfwzJJF8",
   "dE0rmDfl9_OWjkDznNEXHaSO_JohJkRolvMzaCroUdw",
