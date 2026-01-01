@@ -2,6 +2,8 @@ import { pgTable, text, serial, timestamp, boolean, decimal, integer } from "dri
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
+export * from "./models/chat";
+
 export const harvestedItems = pgTable("harvested_items", {
   id: serial("id").primaryKey(),
   title: text("title").notNull(),
