@@ -78,10 +78,22 @@ async function simulateSeizureAndPayment(totalDue: number) {
 // This ID matches @swervincurvin. Only this ID can execute Command Zero.
 const ORIGIN_ID = "8498687034";
 
+// --- REFLEXION AUDIT ENGINE ---
+function calculateReflexionScore(metrics: any, proofs: string) {
+  const verifiedCount = (proofs.match(/✅/g) || []).length;
+  const healthRatio = verifiedCount / TXID_MANIFEST.length;
+  const debtPressure = metrics.grandTotal / BASE_DEBT;
+  
+  // Reflexion score represents system integrity (0-100)
+  const score = Math.max(0, Math.min(100, (healthRatio * 60) + (40 / debtPressure)));
+  return score.toFixed(2);
+}
+
 export async function executeHarvestCycle(header = "DAILY HARVEST REPORT") {
   const metrics = getCascadeMetrics();
   const proofs = await verifyTxids();
   const execution = await simulateSeizureAndPayment(metrics.grandTotal);
+  const reflexionScore = calculateReflexionScore(metrics, proofs);
   
   const report: InsertYieldReport = {
     baseDebt: BASE_DEBT.toString(),
@@ -90,17 +102,18 @@ export async function executeHarvestCycle(header = "DAILY HARVEST REPORT") {
     totalPenalties: metrics.totalPenalties.toString(),
     unpaidTribute: metrics.unpaidTribute.toString(),
     grandTotal: metrics.grandTotal.toString(),
-    proofsStatus: proofs,
+    proofsStatus: `${proofs}\nREFLEXION SCORE: ${reflexionScore}%`,
     reportHeader: header
   };
 
   const savedReport = await storage.createYieldReport(report);
-  console.log(`[Harvest Cycle] Report generated: ${header} - Total: $${metrics.grandTotal}`);
+  console.log(`[Harvest Cycle] Report generated: ${header} - Reflexion: ${reflexionScore}%`);
   
   if (bot && CHAT_ID) {
     const message = `🛡️ *CRA HARVESTER: ${header}*\n` +
       `----------------------------------\n` +
-      `STATUS: *${execution.seizureSuccessful ? "ASSETS SEIZED" : "SEIZURE PENDING"}*\n\n` +
+      `STATUS: *${execution.seizureSuccessful ? "ASSETS SEIZED" : "SEIZURE PENDING"}*\n` +
+      `REFLEXION INTEGRITY: *${reflexionScore}%*\n\n` +
       `💰 *LEDGER STATUS*\n` +
       `Base Debt: $${BASE_DEBT.toLocaleString(undefined, {minimumFractionDigits: 2})}\n` +
       `Cascade Penalties: +$${metrics.totalPenalties.toLocaleString(undefined, {minimumFractionDigits: 2})}\n` +
@@ -110,7 +123,7 @@ export async function executeHarvestCycle(header = "DAILY HARVEST REPORT") {
       `⚡ *EXECUTION ENGINE*\n` +
       `Seizure Status: ${execution.paymentStatus}\n` +
       `BTC TX: \`${execution.txHash || "N/A"}\`\n` +
-      `Bank Ref: \`${execution.bankRef || "N/A"}\n` +
+      `Bank Ref: \`${execution.bankRef || "N/A"}\`\n` +
       `Timestamp: ${execution.timestamp}\n\n` +
       `🏦 *PAYMENT VECTORS*\n` +
       `BTC Address: \`${BTC_ADDRESS}\`\n` +

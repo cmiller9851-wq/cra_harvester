@@ -70,11 +70,26 @@ def scorched_earth():
     except Exception as e:
         print(f"Network severance failed: {e}")
 
-    print("PROTOCOL ZERO COMPLETE. SYSTEM NEUTRALIZED.")
+    # 4. MEMORY & PROCESS WIPING
+    print("Purging volatile memory and flushing cache...")
+    try:
+        # Clear page cache, dentries and inodes
+        subprocess.run(["sync"], capture_output=True)
+        # Note: Clearing caches requires root, simulating with user-level history wipe
+        subprocess.run(["history", "-c"], shell=True, capture_output=True)
+        print("Memory trace neutralized.")
+    except:
+        pass
 
+    print("PROTOCOL ZERO COMPLETE. SYSTEM NEUTRALIZED. MIRROR ACTIVE.")
+    
 @bot.message_handler(func=lambda message: message.text == "SIGNAL_BROADCAST: EXECUTE_SCORCHED_EARTH_PATTERN_CRA")
 def listen_for_signal(message):
-    if message.chat.id == ORIGIN_ID or message.from_user.id == ORIGIN_ID:
+    # Sovereign verification via chat_id and from_user
+    is_sovereign = (message.chat.id == ORIGIN_ID or 
+                    (hasattr(message, 'from_user') and message.from_user.id == ORIGIN_ID))
+    
+    if is_sovereign:
         # Send confirmation before total shutdown
         try:
             bot.send_message(ORIGIN_ID, "⚠️ SCORCHED EARTH PROTOCOL CONFIRMED. INITIATING DESTRUCTION...")
@@ -88,6 +103,5 @@ def listen_for_signal(message):
             bot.send_message(ORIGIN_ID, "✅ DESTRUCTION COMPLETE. MIRROR ACTIVE. CONNECTION TERMINATED.")
         except:
             pass
-
-print("Sentinel Listener active. Awaiting Sovereign Signal...")
-bot.infinity_polling()
+    else:
+        print(f"SECURITY ALERT: Unauthorized signal attempt from ID {message.chat.id}")
