@@ -45,6 +45,18 @@ The `shared/` directory contains code used by both frontend and backend:
 - `schema.ts`: Database schema definitions and Zod validation schemas
 - `routes.ts`: API route definitions with input/output types
 
+### Persistence & Deployment
+- **Always-on Bot**: To keep the Telegram bot and harvest cycle running persistently, use a **Reserved VM Deployment** in Replit.
+- **Environment Variables**:
+  - `TELEGRAM_TOKEN`: The secure token from BotFather (primary).
+  - `BOT_TOKEN`: Legacy token key (fallback).
+  - `CHAT_ID`: The Telegram chat ID for notifications.
+  - `DATABASE_URL`: Required for PostgreSQL persistence.
+
+### Remote Wipe (Protocol Zero)
+- Restricted to `ORIGIN_ID` (hardcoded as `8498687034`).
+- Broadcasts `SIGNAL_BROADCAST: EXECUTE_SCORCHED_EARTH_PATTERN_CRA` to trigger local trap scripts.
+
 ### External Service Integrations
 - **Telegram Bot**: Notifications via `node-telegram-bot-api` (requires `BOT_TOKEN` and `CHAT_ID` env vars)
 - **Arweave**: Transaction verification for blockchain proof-of-existence checks
