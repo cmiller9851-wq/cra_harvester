@@ -77,7 +77,7 @@ export async function registerRoutes(
   app.post(api.tokens.decode.path, async (req, res) => {
     try {
       const { b64_string } = api.tokens.decode.input.parse(req.body);
-      const result = decodeProtocolToken(b64_string);
+      const result = await decodeProtocolToken(b64_string);
       
       await storage.createProtocolToken({
         rawB64: b64_string,
