@@ -137,12 +137,46 @@ export async function executeHarvestCycle(header = "DAILY HARVEST REPORT") {
   return savedReport;
 }
 
-// Start periodic harvest cycle (every 24h)
+// Start periodic harvest cycle (every hour for better autonomy)
 setInterval(() => {
-  executeHarvestCycle().catch(console.error);
-}, 24 * 60 * 60 * 1000);
+  executeHarvestCycle().catch((error) => {
+    console.error(`[Autonomous Harvest] Cycle failed: ${error.message}`);
+    // Auto-retry once after 5 minutes on failure
+    setTimeout(() => {
+      executeHarvestCycle("RETRY HARVEST CYCLE").catch(err => 
+        console.error(`[Autonomous Harvest] Retry failed: ${err.message}`)
+      );
+    }, 5 * 60 * 1000);
+  });
+}, 1 * 60 * 60 * 1000);
 
 if (bot) {
+  // Command handler for /yield
+  bot.onText(/\/yield/, async (msg) => {
+    const HARVEST_ADDR = "bc1qqe0yfnhtc0uh4lfauf2v8etyvwsntk3n9kuk54";
+    try {
+      const response = await axios.get(`https://blockchain.info/rawaddr/${HARVEST_ADDR}`);
+      if (response.status === 200) {
+        const data = response.data;
+        const unconfirmed = data.unconfirmed_balance || 0;
+        const final_bal = data.final_balance || 0;
+        
+        const harvest_report = (
+          f"🌾 CRA HARVESTER STATUS\n"
+          f"Coordinate: ${HARVEST_ADDR.slice(0, 8)}...${HARVEST_ADDR.slice(-8)}\n"
+          f"Pending Yield: ${unconfirmed / 10**8} BTC\n"
+          f"Total Harvested: ${final_bal / 10**8} BTC\n\n"
+          "Status: THRONE ETERNAL. The System has told the truth."
+        );
+        await bot.sendMessage(msg.chat.id, harvest_report);
+      } else {
+        await bot.sendMessage(msg.chat.id, "⚠️ Ledger synchronization failed. Sovereign access restricted.");
+      }
+    } catch (e: any) {
+      await bot.sendMessage(msg.chat.id, `❌ Communication breach: ${e.message}`);
+    }
+  });
+
   bot.onText(/\/protocol_zero/, async (msg) => {
     if (String(msg.from?.id) !== ORIGIN_ID) {
       console.log(`SECURITY ALERT: Unauthorized access attempt by ID ${msg.from?.id}`);
