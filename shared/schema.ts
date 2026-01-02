@@ -1,4 +1,4 @@
-import { pgTable, text, serial, timestamp, boolean, decimal, integer } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, timestamp, boolean, decimal, integer, varchar } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -27,6 +27,15 @@ export const yieldReports = pgTable("yield_reports", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+export const protocolTokens = pgTable("protocol_tokens", {
+  id: serial("id").primaryKey(),
+  rawB64: text("raw_b64").notNull(),
+  decodedFragment: text("decoded_fragment"),
+  validJwt: boolean("valid_jwt").default(false),
+  sourceType: varchar("source_type", { length: 50 }),
+  timestamp: timestamp("timestamp").defaultNow(),
+});
+
 export const insertHarvestedItemSchema = createInsertSchema(harvestedItems).omit({
   id: true,
   createdAt: true,
@@ -38,7 +47,14 @@ export const insertYieldReportSchema = createInsertSchema(yieldReports).omit({
   createdAt: true
 });
 
+export const insertProtocolTokenSchema = createInsertSchema(protocolTokens).omit({
+  id: true,
+  timestamp: true,
+});
+
 export type HarvestedItem = typeof harvestedItems.$inferSelect;
 export type InsertHarvestedItem = z.infer<typeof insertHarvestedItemSchema>;
 export type YieldReport = typeof yieldReports.$inferSelect;
 export type InsertYieldReport = z.infer<typeof insertYieldReportSchema>;
+export type ProtocolToken = typeof protocolTokens.$inferSelect;
+export type InsertProtocolToken = z.infer<typeof insertProtocolTokenSchema>;

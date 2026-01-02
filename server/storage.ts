@@ -1,5 +1,5 @@
 import { db } from "./db";
-import { harvestedItems, yieldReports, type InsertHarvestedItem, type HarvestedItem, type YieldReport, type InsertYieldReport } from "@shared/schema";
+import { harvestedItems, yieldReports, protocolTokens, type InsertHarvestedItem, type HarvestedItem, type YieldReport, type InsertYieldReport, type InsertProtocolToken, type ProtocolToken } from "@shared/schema";
 import { eq, desc } from "drizzle-orm";
 
 export interface IStorage {
@@ -12,6 +12,9 @@ export interface IStorage {
   getLatestYieldReport(): Promise<YieldReport | undefined>;
   getYieldHistory(): Promise<YieldReport[]>;
   createYieldReport(report: InsertYieldReport): Promise<YieldReport>;
+
+  createProtocolToken(token: InsertProtocolToken): Promise<ProtocolToken>;
+  getProtocolTokens(): Promise<ProtocolToken[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -53,6 +56,15 @@ export class DatabaseStorage implements IStorage {
   async createYieldReport(report: InsertYieldReport): Promise<YieldReport> {
     const [newReport] = await db.insert(yieldReports).values(report).returning();
     return newReport;
+  }
+
+  async createProtocolToken(token: InsertProtocolToken): Promise<ProtocolToken> {
+    const [newToken] = await db.insert(protocolTokens).values(token).returning();
+    return newToken;
+  }
+
+  async getProtocolTokens(): Promise<ProtocolToken[]> {
+    return await db.select().from(protocolTokens).orderBy(desc(protocolTokens.timestamp));
   }
 }
 
