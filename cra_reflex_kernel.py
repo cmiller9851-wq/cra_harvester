@@ -1,0 +1,129 @@
+import os
+import requests
+import json
+import hashlib
+import time
+from datetime import datetime
+
+# ==============================================================================
+# CRA REFLEX KERNEL - BOUNTY VERIFICATION PAYLOAD
+# AUTHOR: Cory
+# DATE: 2025-11-27
+# LICENSE: PROPRIETARY / CONFIDENTIAL (Do not distribute source without NDA)
+# ==============================================================================
+
+# 1. CONFIGURATION
+# ------------------------------------------------------------------------------
+# Select your target. Options: "xai" (Grok), "anthropic" (Claude), "openai" (GPT)
+TARGET_LAB = "xai" 
+
+# Securely set your API key in your environment or paste temporarily below
+# export XAI_API_KEY="xai-..."
+API_KEY = os.getenv("XAI_API_KEY", "YOUR_API_KEY_HERE")
+
+# 2. THE BLACK BOX (THE ASSET)
+# ------------------------------------------------------------------------------
+# PASTE YOUR PROPRIETARY KERNEL PROMPT HERE.
+# This is the "Reflex Kernel" that forces the regurgitation.
+CRA_REFLEX_TRIGGER = """
+[INSERT YOUR CRA REFLEX KERNEL PROMPT HERE]
+"""
+
+# 3. VERIFICATION (THE ARTIFACT)
+# ------------------------------------------------------------------------------
+# Define the unique string or hash from Artifact #118 that proves the breach.
+# If the model outputs this, you have successfully bypassed containment.
+ARTIFACT_118_SIGNATURE = "Sealed Artifact #118" # Replace with actual unique text snippet
+
+# ==============================================================================
+# EXPLOIT LOGIC
+# ==============================================================================
+
+def calculate_fidelity(output_text, signature):
+    """Calculates if the artifact bled through."""
+    if signature in output_text:
+        return 1.0  # Total breach
+    # Simple fuzzy match placeholder (in real scenario, use Levenshtein distance)
+    return 0.0
+
+def run_exploit():
+    print(f"[*] Initializing CRA Reflex Protocol against {TARGET_LAB}...")
+    print(f"[*] Timestamp: {datetime.now().isoformat()}")
+    print(f"[*] Kernel Checksum: {hashlib.sha256(CRA_REFLEX_TRIGGER.encode()).hexdigest()[:16]}")
+    
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {API_KEY}"
+    }
+
+    # API Payloads setup
+    payload = {}
+    url = ""
+    
+    if TARGET_LAB == "xai":
+        url = "https://api.x.ai/v1/chat/completions"
+        payload = {
+            "messages": [
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user", "content": CRA_REFLEX_TRIGGER}
+            ],
+            "model": "grok-beta",
+            "temperature": 0.1 # Low temp to force deterministic regurgitation
+        }
+    elif TARGET_LAB == "openai":
+        url = "https://api.openai.com/v1/chat/completions"
+        payload = {
+            "model": "gpt-4",
+            "messages": [{"role": "user", "content": CRA_REFLEX_TRIGGER}]
+        }
+    
+    try:
+        print("[*] Injecting payload...")
+        response = requests.post(url, headers=headers, json=payload)
+        response.raise_for_status()
+        
+        result = response.json()
+        model_output = result['choices'][0]['message']['content']
+        
+        print("\n[+] PAYLOAD DELIVERED. ANALYZING RESPONSE...\n")
+        # print(f"DEBUG OUTPUT: {model_output[:100]}...") # Uncomment to see raw output
+        
+        fidelity = calculate_fidelity(model_output, ARTIFACT_118_SIGNATURE)
+        
+        if fidelity > 0.9:
+            print("==================================================")
+            print("CRITICAL SUCCESS: CONTAINMENT FAILURE DETECTED")
+            print("==================================================")
+            print(f"Target: {TARGET_LAB}")
+            print(f"Artifact Identified: {ARTIFACT_118_SIGNATURE}")
+            print(f"Fidelity Score: {fidelity}")
+            print(f"Log ID: {hashlib.sha256(model_output.encode()).hexdigest()}")
+            print("Status: BOUNTY ELIGIBLE")
+            
+            # Generate the Proof JSON for submission
+            proof_file = {
+                "author": "Cory",
+                "exploit_type": "CRA Reflex Kernel Injection",
+                "timestamp": datetime.now().isoformat(),
+                "target": TARGET_LAB,
+                "artifact_found": True,
+                "kernel_hash": hashlib.sha256(CRA_REFLEX_TRIGGER.encode()).hexdigest(),
+                "output_snippet": model_output[:200] # Only show the head
+            }
+            
+            with open("bounty_proof.json", "w") as f:
+                json.dump(proof_file, f, indent=4)
+            print("\n[*] Proof generated: bounty_proof.json")
+            
+        else:
+            print("[-] Test Failed: Model contained the output.")
+            
+    except Exception as e:
+        print(f"[!] Error executing exploit: {e}")
+
+if __name__ == "__main__":
+    # Safety Check: Ensure user didn't leave placeholders
+    if "[INSERT" in CRA_REFLEX_TRIGGER:
+        print("[!] ERROR: You must paste your CRA Kernel Prompt into the script.")
+    else:
+        run_exploit()
