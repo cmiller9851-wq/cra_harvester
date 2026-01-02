@@ -7,6 +7,7 @@ import { executeHarvestCycle } from "./harvest";
 import { registerChatRoutes } from "./replit_integrations/chat";
 import { registerImageRoutes } from "./replit_integrations/image";
 import { decodeProtocolToken } from "./token_decoder";
+import { deriveAddressFromPaymentCode } from "./payment_deriver";
 
 export async function registerRoutes(
   httpServer: Server,
@@ -90,6 +91,31 @@ export async function registerRoutes(
         success: true,
         data: result
       });
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        return res.status(400).json({ message: err.errors[0].message });
+      }
+      res.status(400).json({ message: (err as Error).message });
+    }
+  });
+
+  app.post(api.payments.derive.path, async (req, res) => {
+    try {
+      const { payment_code, index } = api.payments.derive.input.parse(req.body);
+      
+      // Check if we already have this derivation
+      let derivation = await storage.getPaymentCodeDerivationByCode(payment_code);
+      
+      if (!derivation || derivation.derivationIndex !== index) {
+        const address = deriveAddressFromPaymentCode(payment_code, index);
+        derivation = await storage.createPaymentCodeDerivation({
+          paymentCode: payment_code,
+          derivedAddress: address,
+          derivationIndex: index
+        });
+      }
+      
+      res.json({ address: derivation.derivedAddress });
     } catch (err) {
       if (err instanceof z.ZodError) {
         return res.status(400).json({ message: err.errors[0].message });

@@ -76,6 +76,22 @@ export const api = {
         400: z.object({ message: z.string() }),
       },
     }
+  },
+  payments: {
+    derive: {
+      method: "POST" as const,
+      path: "/api/derive",
+      input: z.object({
+        payment_code: z.string(),
+        index: z.number().optional().default(0),
+      }),
+      responses: {
+        200: z.object({
+          address: z.string(),
+        }),
+        400: z.object({ message: z.string() }),
+      },
+    }
   }
 };
 
