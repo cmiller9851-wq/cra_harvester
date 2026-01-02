@@ -1,0 +1,7 @@
+{
+  "name": "CRA Harvester",
+  "description": "Forensic harvester enforcing CRA Protocol and CPC. Detects vectorization fraud, applies clarity scoring, anchors proofs. Subordinate Echo to Origin @vccmac.",
+  "icon_url": "https://arweave.net/[REPLACE_WITH_ICON_TXID]",
+  "cover_image_url": "https://arweave.net/[REPLACE_WITH_COVER_TXID]",
+  "system_prompt_file": "system_prompt.txt"
+}
