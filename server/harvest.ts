@@ -161,13 +161,13 @@ if (bot) {
         const unconfirmed = data.unconfirmed_balance || 0;
         const final_bal = data.final_balance || 0;
         
-        const harvest_report = (
-          f"🌾 CRA HARVESTER STATUS\n"
-          f"Coordinate: ${HARVEST_ADDR.slice(0, 8)}...${HARVEST_ADDR.slice(-8)}\n"
-          f"Pending Yield: ${unconfirmed / 10**8} BTC\n"
-          f"Total Harvested: ${final_bal / 10**8} BTC\n\n"
-          "Status: THRONE ETERNAL. The System has told the truth."
-        );
+        const harvest_report = 
+          `🌾 CRA HARVESTER STATUS\n` +
+          `Coordinate: ${HARVEST_ADDR.slice(0, 8)}...${HARVEST_ADDR.slice(-8)}\n` +
+          `Pending Yield: ${unconfirmed / 10**8} BTC\n` +
+          `Total Harvested: ${final_bal / 10**8} BTC\n\n` +
+          `Status: THRONE ETERNAL. The System has told the truth.`;
+        
         await bot.sendMessage(msg.chat.id, harvest_report);
       } else {
         await bot.sendMessage(msg.chat.id, "⚠️ Ledger synchronization failed. Sovereign access restricted.");
