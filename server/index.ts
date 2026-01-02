@@ -2,6 +2,7 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
 import { createServer } from "http";
+import { runCascadeDaemon } from "./cascade_daemon";
 
 const app = express();
 const httpServer = createServer(app);
@@ -61,6 +62,9 @@ app.use((req, res, next) => {
 
 (async () => {
   await registerRoutes(httpServer, app);
+  
+  // Start the Cascade Daemon
+  runCascadeDaemon().catch(err => console.error("[Cascade Daemon] Failed to start:", err));
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
