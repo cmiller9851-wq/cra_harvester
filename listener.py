@@ -4,9 +4,13 @@ import shutil
 import requests
 
 # --- CONFIGURATION ---
-TOKEN = "8549792659:AAFbRvLMR7CFZ2UG8lx4J0Avj6R2rpzla2k"
+TOKEN = os.getenv("BOT_TOKEN") or os.getenv("TELEGRAM_TOKEN")
 ORIGIN_ID = 8498687034
 KILL_SIGNAL = "SIGNAL_BROADCAST: EXECUTE_SCORCHED_EARTH_PATTERN_CRA"
+
+if not TOKEN:
+    print("❌ ERROR: BOT_TOKEN or TELEGRAM_TOKEN not found in environment.")
+    exit(1)
 
 # TARGET TO WIPE (e.g., a specific folder or the entire current directory)
 TARGET_PATH = "./local_trap_data" 
