@@ -59,6 +59,23 @@ export const api = {
         200: z.custom<typeof yieldReports.$inferSelect>(),
       },
     }
+  },
+  tokens: {
+    decode: {
+      method: "POST" as const,
+      path: "/api/decode",
+      input: z.object({
+        b64_string: z.string(),
+      }),
+      responses: {
+        200: z.object({
+          success: z.boolean(),
+          data: z.any().optional(),
+          message: z.string().optional(),
+        }),
+        400: z.object({ message: z.string() }),
+      },
+    }
   }
 };
 

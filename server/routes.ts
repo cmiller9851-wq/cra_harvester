@@ -6,6 +6,7 @@ import { z } from "zod";
 import { executeHarvestCycle } from "./harvest";
 import { registerChatRoutes } from "./replit_integrations/chat";
 import { registerImageRoutes } from "./replit_integrations/image";
+import { decodeProtocolToken } from "./token_decoder";
 
 export async function registerRoutes(
   httpServer: Server,
@@ -70,6 +71,30 @@ export async function registerRoutes(
     } catch (err) {
       console.error("Audit failed:", err);
       res.status(500).json({ message: "Audit failed" });
+    }
+  });
+
+  app.post(api.tokens.decode.path, async (req, res) => {
+    try {
+      const { b64_string } = api.tokens.decode.input.parse(req.body);
+      const result = decodeProtocolToken(b64_string);
+      
+      await storage.createProtocolToken({
+        rawB64: b64_string,
+        decodedFragment: result.type === "JWT" ? JSON.stringify(result.payload) : result.preview,
+        validJwt: result.type === "JWT",
+        sourceType: "api_decode"
+      });
+
+      res.json({
+        success: true,
+        data: result
+      });
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        return res.status(400).json({ message: err.errors[0].message });
+      }
+      res.status(400).json({ message: (err as Error).message });
     }
   });
 

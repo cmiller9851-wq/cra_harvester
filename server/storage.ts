@@ -36,7 +36,7 @@ export class DatabaseStorage implements IStorage {
     await db.delete(harvestedItems).where(eq(harvestedItems.id, id));
   }
 
-  async updateHarvestedItemStatus(id: number, status: string): Promise<HarvestedItem> {
+  async updateHarvestedItemStatus(id: number, status: "pending" | "completed" | "failed"): Promise<HarvestedItem> {
     const [item] = await db.update(harvestedItems)
       .set({ status })
       .where(eq(harvestedItems.id, id))
