@@ -1,5 +1,5 @@
 import { db } from "./db";
-import { harvestedItems, yieldReports, protocolTokens, paymentCodeDerivations, type InsertHarvestedItem, type HarvestedItem, type YieldReport, type InsertYieldReport, type InsertProtocolToken, type ProtocolToken, type InsertPaymentCodeDerivation, type PaymentCodeDerivation } from "@shared/schema";
+import { harvestedItems, yieldReports, protocolTokens, paymentCodeDerivations, paymentCodes, type InsertHarvestedItem, type HarvestedItem, type YieldReport, type InsertYieldReport, type InsertProtocolToken, type ProtocolToken, type InsertPaymentCodeDerivation, type PaymentCodeDerivation, type InsertPaymentCode, type PaymentCode } from "@shared/schema";
 import { eq, desc } from "drizzle-orm";
 
 export interface IStorage {
@@ -19,6 +19,9 @@ export interface IStorage {
   createPaymentCodeDerivation(derivation: InsertPaymentCodeDerivation): Promise<PaymentCodeDerivation>;
   getPaymentCodeDerivations(): Promise<PaymentCodeDerivation[]>;
   getPaymentCodeDerivationByCode(code: string): Promise<PaymentCodeDerivation | undefined>;
+
+  createPaymentCode(code: InsertPaymentCode): Promise<PaymentCode>;
+  getPaymentCodes(): Promise<PaymentCode[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -83,6 +86,15 @@ export class DatabaseStorage implements IStorage {
   async getPaymentCodeDerivationByCode(code: string): Promise<PaymentCodeDerivation | undefined> {
     const [derivation] = await db.select().from(paymentCodeDerivations).where(eq(paymentCodeDerivations.paymentCode, code));
     return derivation;
+  }
+
+  async createPaymentCode(code: InsertPaymentCode): Promise<PaymentCode> {
+    const [newCode] = await db.insert(paymentCodes).values(code).returning();
+    return newCode;
+  }
+
+  async getPaymentCodes(): Promise<PaymentCode[]> {
+    return await db.select().from(paymentCodes).orderBy(desc(paymentCodes.createdTimestamp));
   }
 }
 
