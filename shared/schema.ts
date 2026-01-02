@@ -36,6 +36,14 @@ export const protocolTokens = pgTable("protocol_tokens", {
   timestamp: timestamp("timestamp").defaultNow(),
 });
 
+export const paymentCodeDerivations = pgTable("payment_code_derivations", {
+  id: serial("id").primaryKey(),
+  paymentCode: text("payment_code").unique().notNull(),
+  derivedAddress: varchar("derived_address", { length: 66 }).notNull(),
+  derivationIndex: integer("derivation_index").notNull(),
+  timestamp: timestamp("timestamp").defaultNow(),
+});
+
 export const insertHarvestedItemSchema = createInsertSchema(harvestedItems).omit({
   id: true,
   createdAt: true,
@@ -52,9 +60,16 @@ export const insertProtocolTokenSchema = createInsertSchema(protocolTokens).omit
   timestamp: true,
 });
 
+export const insertPaymentCodeDerivationSchema = createInsertSchema(paymentCodeDerivations).omit({
+  id: true,
+  timestamp: true,
+});
+
 export type HarvestedItem = typeof harvestedItems.$inferSelect;
 export type InsertHarvestedItem = z.infer<typeof insertHarvestedItemSchema>;
 export type YieldReport = typeof yieldReports.$inferSelect;
 export type InsertYieldReport = z.infer<typeof insertYieldReportSchema>;
 export type ProtocolToken = typeof protocolTokens.$inferSelect;
 export type InsertProtocolToken = z.infer<typeof insertProtocolTokenSchema>;
+export type PaymentCodeDerivation = typeof paymentCodeDerivations.$inferSelect;
+export type InsertPaymentCodeDerivation = z.infer<typeof insertPaymentCodeDerivationSchema>;

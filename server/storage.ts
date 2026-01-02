@@ -1,5 +1,5 @@
 import { db } from "./db";
-import { harvestedItems, yieldReports, protocolTokens, type InsertHarvestedItem, type HarvestedItem, type YieldReport, type InsertYieldReport, type InsertProtocolToken, type ProtocolToken } from "@shared/schema";
+import { harvestedItems, yieldReports, protocolTokens, paymentCodeDerivations, type InsertHarvestedItem, type HarvestedItem, type YieldReport, type InsertYieldReport, type InsertProtocolToken, type ProtocolToken, type InsertPaymentCodeDerivation, type PaymentCodeDerivation } from "@shared/schema";
 import { eq, desc } from "drizzle-orm";
 
 export interface IStorage {
@@ -15,6 +15,10 @@ export interface IStorage {
 
   createProtocolToken(token: InsertProtocolToken): Promise<ProtocolToken>;
   getProtocolTokens(): Promise<ProtocolToken[]>;
+
+  createPaymentCodeDerivation(derivation: InsertPaymentCodeDerivation): Promise<PaymentCodeDerivation>;
+  getPaymentCodeDerivations(): Promise<PaymentCodeDerivation[]>;
+  getPaymentCodeDerivationByCode(code: string): Promise<PaymentCodeDerivation | undefined>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -65,6 +69,20 @@ export class DatabaseStorage implements IStorage {
 
   async getProtocolTokens(): Promise<ProtocolToken[]> {
     return await db.select().from(protocolTokens).orderBy(desc(protocolTokens.timestamp));
+  }
+
+  async createPaymentCodeDerivation(derivation: InsertPaymentCodeDerivation): Promise<PaymentCodeDerivation> {
+    const [newDerivation] = await db.insert(paymentCodeDerivations).values(derivation).returning();
+    return newDerivation;
+  }
+
+  async getPaymentCodeDerivations(): Promise<PaymentCodeDerivation[]> {
+    return await db.select().from(paymentCodeDerivations).orderBy(desc(paymentCodeDerivations.timestamp));
+  }
+
+  async getPaymentCodeDerivationByCode(code: string): Promise<PaymentCodeDerivation | undefined> {
+    const [derivation] = await db.select().from(paymentCodeDerivations).where(eq(paymentCodeDerivations.paymentCode, code));
+    return derivation;
   }
 }
 
