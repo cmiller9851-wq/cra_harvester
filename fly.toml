@@ -1,0 +1,12 @@
+app = "cra-harvester-sovereign"
+primary_region = "ord"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  TELEGRAM_BOT_TOKEN = ""
+
+[mounts]
+  source = "harvest_data"
+  destination = "/app/data"
