@@ -1,0 +1,11 @@
+[
+  {
+    "id": 1,
+    "offender_identifier": "example_offender_btc_address_or_wallet_label",
+    "beneficiary_address": "bc1qqe0yfnhtc0uh4lfauf2v8etyvwsntk3n9kuk54",
+    "asset_type": "BTC",
+    "amount_sats_or_wei": 100000000,
+    "due_date": "2025-12-31T23:59:59Z",
+    "notes": "Example IP licensing debt - replace with real offender details"
+  }
+]
