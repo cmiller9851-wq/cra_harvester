@@ -1,19 +1,11 @@
-version: 1
 services:
   - type: web
     name: cra-harvester-bot
-    runtime: python
-    plan: free
+    env: python
     buildCommand: pip install -r requirements.txt
-    startCommand: python bot.py
+    startCommand: python main.py
     envVars:
+      - key: NODE_AUTH_TOKEN
+        sync: false # Set this value manually in the Render UI
       - key: PYTHON_VERSION
-        value: 3.12
-      - key: PORT
-        value: "10000"
-      # Add your Telegram bot token here (keep it secret)
-      - key: TELEGRAM_BOT_TOKEN
-        value: your-telegram-bot-token-here
-        sync: false
-    healthCheckPath: /health
-    autoDeploy: true
+        value: 3.10.0
