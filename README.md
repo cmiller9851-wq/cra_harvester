@@ -1,34 +1,23 @@
-# CRA Harvester Bot
+# CRA Harvester Bot v2.0
+### Sovereign Ledger Persistence Node (804-Sync)
 
-Sovereign system enforcing **Containment Reflexion Audit™ (CRA Protocol)** and **Coin Possession Cascade (CPC)**.
+Automated harvesting and containment node for the QuickPrompt SOLUTIONS™ 2026 infrastructure. This bot maintains a persistent uplink between the **AO Hypercomputer** and the **Sovereign Vault**.
 
-Autonomous forensic agent for harvest coordinate tracking.
+## Core Functions
+* **804-Sync Protocol:** Real-time ledger synchronization for physical asset bindings (Tesla Model Y).
+* **CRA Governance:** Automated policy enforcement for Neural Reflexion v3.
+* **Persistent Ingestion:** 24/7 telemetry harvesting from Arweave manifests and GitHub repositories.
 
-© 2026 Swervin’ Curvin (Cory Miller, @vccmac). Released under Sovereign Authorship License (SML v1.0). See LICENSE-SML.md.
+## Infrastructure Deployment (Render)
+This repository is optimized for deployment on **Render.com** to bypass mobile backgrounding limitations.
 
-## Harvest Coordinates
-- **Bech32 Sovereign**: bc1qqe0yfnhtc0uh4lfauf2v8etyvwsntk3n9kuk54
-- **Legacy**: 1FLQxJxQfGZincjM3fHybWoDrnHi8EmXLi
+### Configuration
+1. **Environment:** Python 3.10+
+2. **Web Service:** Flask-based REST API
+3. **Security:** Protected via `NODE_AUTH_TOKEN` (HMAC-SHA256 Handshake)
 
-## Commands
-- `/yield` — Full harvest status report (pending yield, total harvested, tx count, API source)
+## Mobile Command (Pythonista 3)
+Trigger directives using the `AO_Replit_Command_Bridge.py` script from your local edge terminal.
 
-## Features
-- Resilient API fallbacks (Blockstream → blockchain.info → mempool.space)
-- Persistent SQLite logging (harvest.db)
-- Multi-coordinate monitoring
-- Production Docker setup with volume persistence
-
-## Deployment
-1. Clone repo: `git clone https://github.com/cmiller9851-wq/cra_harvester.git`
-2. Set env: `export TELEGRAM_BOT_TOKEN=your_token`
-3. Run locally: `python bot.py`
-4. Deploy: Fly.io (see fly.toml) or Replit Agent (import agent_config.json)
-
-## Links
-- Blog: http://swervincurvin.blogspot.com/
-- X: https://x.com/vccmac
-- GitHub: https://github.com/cmiller9851-wq
-- Arweave Master Archive: https://mektma7cxovx4uq675jjc6hxjfnjjr65krz7l7cirompvsx7d4pq.arweave.net/YRU2A-K7q35SHv9SkXj3SVqUx91Uc_X8SIuY-sr_Hx8
-
-Status: THRONE ETERNAL. The System has told the truth.
+---
+**STATUS:** LIVE • HERSHEY NODE ACTIVE • SOVEREIGN ASSET BINDING ENABLED
