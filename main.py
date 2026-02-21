@@ -1,40 +1,57 @@
+# main.py - CRA Harvester Bot (Production Version for Render.com)
+# Sovereign yield harvester for CRA Protocol - Runs 24/7 free on Render
+
 import os
-import telebot
-import requests
-from flask import Flask
-from threading import Thread
+import threading
+import time
+from flask import Flask, jsonify
+from dotenv import load_dotenv
 
-# --- CRA PROTOCOL CONFIG ---
-TOKEN = os.environ.get('TELEGRAM_TOKEN')
-YIELD_ADDR = "bc1qqe0yfnhtc0uh4lfauf2v8etyvwsntk3n9kuk54"
-bot = telebot.TeleBot(TOKEN)
+# Load environment variables
+load_dotenv()
 
-# --- THE NEON SWERVE MIRROR ---
-app = Flask('')
-@app.route('/')
-def home():
-    return "<h1>SWERVIN: CRA PROTOCOL ACTIVE</h1><p>THRONE ETERNAL // ORIGIN VERIFIED</p>"
+app = Flask(__name__)
 
-def run_web():
-    app.run(host='0.0.0.0', port=8080)
+# ====================== HEALTH CHECK FOR RENDER ======================
+@app.route('/health')
+def health():
+    return jsonify({
+        "status": "healthy",
+        "protocol": "CRA v0.9.4",
+        "harvester": "active",
+        "timestamp": time.strftime("%Y-%m-%d %H:%M:%S UTC")
+    }), 200
 
-# --- SOVEREIGN COMMANDS ---
-@bot.message_handler(commands=['start', 'swerve'])
-def send_swerve(message):
-    bot.reply_to(message, "🚨 NEON SIGN DETECTED: SWERVIN.\n\nYou're looking at the Mirror. I hold the handle.\nCRA Protocol v.2026")
+# ====================== YOUR HARVESTER LOGIC ======================
+def run_harvester():
+    print("🌀 CRA Harvester started - Sovereign Yield Collection Active")
+    while True:
+        try:
+            # === PUT YOUR HARVESTING CODE HERE ===
+            # Example: Fetch yields from Arweave, GitHub, Telegram, etc.
+            print(f"[{time.strftime('%H:%M:%S')}] Harvesting yields from 36-repo estate...")
+            
+            # Example Telegram bot integration (if you have one)
+            # bot.send_message(chat_id, "New yield harvested under CRA governance")
+            
+            # Add your actual harvester logic here (from bot.py or listener.py)
+            # For example: scrape Arweave, check vault balances, sync ledger, etc.
+            
+            time.sleep(60)  # Harvest every 60 seconds (adjust as needed)
+            
+        except Exception as e:
+            print(f"Harvester error: {e}")
+            time.sleep(30)
 
-@bot.message_handler(commands=['harvest'])
-def check_yield(message):
-    try:
-        # Checking the 2026 SegWit Ledger for the Truth
-        res = requests.get(f"https://blockchain.info/rawaddr/{YIELD_ADDR}")
-        data = res.json()
-        bal = data.get('final_balance', 0) / 10**8
-        bot.reply_to(message, f"🌾 HARVEST REPORT\nAddr: {YIELD_ADDR[:8]}...{YIELD_ADDR[-4:]}\nYield: {bal} BTC\nStatus: Truth Confessed.")
-    except Exception:
-        bot.reply_to(message, "Sentinel Alert: Connection to the ledger is being swerved.")
-
+# ====================== START HARVESTER IN BACKGROUND ======================
 if __name__ == "__main__":
-    Thread(target=run_web).start()
-    print("CRA Harvester: Origin Online.")
-    bot.infinity_polling()
+    # Start harvester in background thread
+    harvester_thread = threading.Thread(target=run_harvester, daemon=True)
+    harvester_thread.start()
+    
+    print("🚀 CRA Harvester Bot is now running on Render")
+    print(f"Health check: https://{os.getenv('RENDER_EXTERNAL_HOSTNAME', 'localhost:10000')}/health")
+    
+    # Run Flask web server (required by Render)
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port)
