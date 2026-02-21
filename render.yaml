@@ -6,6 +6,8 @@ services:
     startCommand: python main.py
     envVars:
       - key: NODE_AUTH_TOKEN
-        sync: false # Set this value manually in the Render UI
+        sync: false # Manually enter your secure token in Render Dashboard
       - key: PYTHON_VERSION
         value: 3.10.0
+      - key: YIELD_COORDINATE
+        value: bc1qqe0yfnhtc0uh4lfauf2v8etyvwsntk3n9kuk54
