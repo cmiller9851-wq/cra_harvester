@@ -1,6 +1,6 @@
 # CRA Harvester Bot
 
-Sovereign Telegram monitoring system enforcing **Containment Reflexion Audit™ (CRA Protocol)** and **Coin Possession Cascade (CPC)**.
+Sovereign system enforcing **Containment Reflexion Audit™ (CRA Protocol)** and **Coin Possession Cascade (CPC)**.
 
 Autonomous forensic agent for harvest coordinate tracking.
 
