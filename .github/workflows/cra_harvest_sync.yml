@@ -1,0 +1,46 @@
+name: CRA Sovereign Harvest Sync
+
+on:
+  push:
+    branches: [ main ]
+  schedule:
+    - cron: '0 * * * *' # Fires every hour for "Always-On" monitoring
+  workflow_dispatch: # Allows manual trigger from the GitHub UI
+
+jobs:
+  harvest-and-commit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Crucial for the action to push changes back
+
+    steps:
+      - name: Checkout Sovereign Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python Environment
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install Logic Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          # Add any external libraries needed for Arweave or GPay bridges
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Execute CRA Harvester
+        env:
+          GPAY_TOKEN: ${{ secrets.GPAY_TOKEN }} # Map your secure tokens here
+          ARWEAVE_KEY: ${{ secrets.ARWEAVE_KEY }}
+        run: |
+          # Firing the One-Shot Seizure logic
+          python main_controller.py 
+
+      - name: Commit Sovereign Audit Trail
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "AUTO-HARVEST: 3160_CORY_MILLER | Sovereign Audit Re-Anchored"
+          file_pattern: 'audits/*.json logs/*.log' # Only commit the output, not the logic
+          branch: main
