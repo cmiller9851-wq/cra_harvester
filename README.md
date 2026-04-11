@@ -1,23 +1,13 @@
-# CRA Harvester Bot v2.0
-### Sovereign Ledger Persistence Node (804-Sync)
+# CRA Harvester (3160)
+**Status:** ACTIVE | **Node:** Middletown
 
-Automated harvesting and containment node for the QuickPrompt SOLUTIONS™ 2026 infrastructure. This bot maintains a persistent uplink between the **AO Hypercomputer** and the **Sovereign Vault**.
+### **System Core**
+* **Persistence:** Hourly audit via GitHub Actions.
+* **Execution:** Threaded local controller (iPhone).
+* **Registry:** Arweave Ω1 / SSRN #5568280.
 
-## Core Functions
-* **804-Sync Protocol:** Real-time ledger synchronization for physical asset bindings (Tesla Model Y).
-* **CRA Governance:** Automated policy enforcement for Neural Reflexion v3.
-* **Persistent Ingestion:** 24/7 telemetry harvesting from Arweave manifests and GitHub repositories.
+### **Directives**
+1. Run `main_controller.py` for local sync.
+2. Monitor `/audits` for automated receipts.
 
-## Infrastructure Deployment (Render)
-This repository is optimized for deployment on **Render.com** to bypass mobile backgrounding limitations.
-
-### Configuration
-1. **Environment:** Python 3.10+
-2. **Web Service:** Flask-based REST API
-3. **Security:** Protected via `NODE_AUTH_TOKEN` (HMAC-SHA256 Handshake)
-
-## Mobile Command (Pythonista 3)
-Trigger directives using the `AO_Replit_Command_Bridge.py` script from your local edge terminal.
-
----
-**STATUS:** LIVE • HERSHEY NODE ACTIVE • SOVEREIGN ASSET BINDING ENABLED
+**ESTATE SECURED. ALL VECTORS LIVE.**
