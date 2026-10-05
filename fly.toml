@@ -5,8 +5,12 @@ primary_region = "ord"
   dockerfile = "Dockerfile"
 
 [env]
-  TELEGRAM_BOT_TOKEN = ""
+  NODE_ENV = "production"
+  PORT = "5000"
 
-[mounts]
-  source = "harvest_data"
-  destination = "/app/data"
+[http_service]
+  internal_port = 5000
+  force_https = true
+  auto_stop_machines = false
+  auto_start_machines = true
+  min_machines_running = 1

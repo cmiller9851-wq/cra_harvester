@@ -1,45 +1,31 @@
-name: CRA Sovereign Harvester
+name: CRA Harvester Node Validation
 on:
   push:
     branches: [main]
-  schedule:
-    - cron: '0 * * * *' # Hourly Always-On Audit
   workflow_dispatch:
 
 jobs:
   audit-and-anchor:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
     steps:
       - name: Checkout Sovereign Core
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Set up Elite Environment
-        uses: actions/setup-python@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
-          python-version: '3.11'
+          node-version: '22'
+          cache: npm
 
-      - name: Execute Sovereign Controller
+      - name: Install dependencies
         run: |
-          # Firing the V8 Monolith
-          # This triggers the 779AX Mirror and CoreWeave IP Seizure
-          python main_controller.py & 
-          sleep 15 # Allow logs to saturate and vectors to initialize
-          kill $! # Background process cleanup
+          npm ci
 
-      - name: Generate Audit Trail
+      - name: Type-check and build canonical service
         run: |
-          mkdir -p audits
-          echo "TIMESTAMP: $(date)" > audits/sovereign_finality.log
-          echo "AUTHORITY: 3160_CORY_MILLER" >> audits/sovereign_finality.log
-          echo "STATUS: IP_ANCHOR_VERIFIED_SSRN_5568280" >> audits/sovereign_finality.log
-          
-      - name: Commit Sovereign Audit
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "audit: 3160_CORY_MILLER | Sovereign Finality Re-Anchored"
-          file_pattern: 'audits/*.log'
-          branch: main
+          npm run check
+          npm run build

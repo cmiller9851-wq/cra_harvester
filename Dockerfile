@@ -1,7 +1,22 @@
-FROM python:3.12-slim
+FROM node:22-bookworm-slim AS build
+
 WORKDIR /app
-COPY bot.py .
-RUN pip install python-telegram-bot==20.8 requests
-VOLUME /app/data
-ENV DB_FILE=/app/data/harvest.db
-CMD ["python", "bot.py"]
+COPY package*.json ./
+RUN npm ci
+
+COPY . .
+RUN npm run check && npm run build
+
+FROM node:22-bookworm-slim AS runtime
+
+ENV NODE_ENV=production
+ENV PORT=5000
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm ci --omit=dev && npm cache clean --force
+COPY --from=build /app/dist ./dist
+
+EXPOSE 5000
+
+CMD ["npm", "start"]

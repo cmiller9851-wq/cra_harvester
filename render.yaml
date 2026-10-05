@@ -1,13 +1,11 @@
 services:
   - type: web
-    name: cra-harvester-bot
-    env: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: python main.py
+    name: cra-harvester-node
+    env: node
+    buildCommand: npm ci && npm run check && npm run build
+    startCommand: npm start
     envVars:
-      - key: NODE_AUTH_TOKEN
-        sync: false # Manually enter your secure token in Render Dashboard
-      - key: PYTHON_VERSION
-        value: 3.10.0
-      - key: YIELD_COORDINATE
-        value: bc1qqe0yfnhtc0uh4lfauf2v8etyvwsntk3n9kuk54
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
